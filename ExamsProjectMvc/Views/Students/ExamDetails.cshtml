@@ -1,0 +1,16 @@
+﻿
+@model ExamsProjectMvc.Models.TeachersModels.ExamViewModel
+
+@{
+    ViewData["Title"] = "Exam Details";
+    Layout = "~/Views/Students/_StudentsLayoutPage.cshtml";
+}
+
+
+<h3>Exam Details</h3>
+<div>
+    <h4>@Model.Title</h4>
+    <hr />
+    <partial name="_BasicExamDetails" model="@Model" />
+    <a asp-action="Index">Back to Index</a>
+</div>

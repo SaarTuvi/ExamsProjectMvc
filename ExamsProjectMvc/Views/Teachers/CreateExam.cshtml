@@ -1,0 +1,34 @@
+﻿@model ExamsProjectMvc.Models.TeachersModels.CreateExamViewModel
+
+@{
+    ViewData["Title"] = "CreateExam";
+    Layout = "~/Views/Teachers/_TeachersLayoutPage.cshtml";
+    ViewData["SbumitText"] = "Create Exam";
+}
+
+
+<hr />
+<div class="row">
+    <div class="col">
+        <form asp-action="CreateExam" onsubmit="return checkForm(event)">
+            <partial name="CreateExamForm" />
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to homepage</a>
+</div>
+
+@section Scripts{
+
+    <script src="~/js/createexam.js"></script>
+    <script src="~/js/checkexamform.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            createNewQuestionCard(true);
+
+        });
+    </script>
+}
+

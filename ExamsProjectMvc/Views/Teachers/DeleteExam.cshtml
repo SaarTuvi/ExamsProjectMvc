@@ -1,0 +1,22 @@
+﻿@model ExamsProjectMvc.Models.TeachersModels.ExamViewModel
+
+@{
+    ViewData["Title"] = "EditExam";
+    Layout = "~/Views/Teachers/_TeachersLayoutPage.cshtml";
+}
+
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>@Model.Title</h4>
+    <hr />
+    <partial name="_BasicExamDetails" model="@Model" />
+    <partial name="questionsDetails" model="@Model.Questions" />
+
+    <form asp-action="DeleteExam">
+        <input type="hidden" asp-for="ExamID" />
+        <input type="hidden" asp-for="TeacherID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to Index</a>
+    </form>
+</div>

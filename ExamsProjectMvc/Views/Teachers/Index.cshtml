@@ -1,0 +1,224 @@
+﻿@model ExamsProjectMvc.Models.TeachersModels.TeacherIndexViewModel
+@{
+    ViewData["Title"] = "Home";
+    Layout = "_TeachersLayoutPage.cshtml";
+}
+
+<div class="jumbotron alert-primary">
+    <div class="row">
+        <div class="col">
+            <h1>Hello, @Model.Name!</h1>
+
+            <h3>Welcome to your personal space!</h3>
+            <p>Here you can create exams and review past exams.</p>
+        </div>
+    </div>
+</div>
+@if (Model.Classrooms.Count > 0)
+{
+    <div class="row" id="classrooms">
+        <div class="col">
+            <h2>Classrooms</h2>
+
+            <div class="alert alert-dismissible alert-secondary">
+                <h4>The classrooms you are assigned to are:</h4>
+                <ul class="list-group">
+                    @foreach (var classroom in Model.Classrooms)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">@Html.DisplayFor(classroomModel => classroom.Title)</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+<div class="row" id="createExams">
+    <div class="col">
+        <h2>Create Exam</h2>
+        <div class="alert alert-dismissible alert-secondary">
+            <h4>Click below to create a new exam</h4>
+            <a asp-controller="Teachers" asp-action="CreateExam">
+                <input type="button" class="btn btn-lg btn-primary" value="Create New Exam" />
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row" id="todayExams">
+    <div class="col">
+        <h2>Exams For Today</h2>
+        @if (Model.TodayExams.Count > 0)
+        {
+            <div class="card">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th>
+                                Exam Title
+                            </th>
+                            <th>
+                                Classroom Title
+                            </th>
+                            <th>
+                                Date
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.TodayExams)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Classroom.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartTime)
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.ExamID">
+                                        <input type="button" class="btn btn-primary" value="View Exam" />
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success">
+                <h4>No exams to show</h4>
+                <p>There are no exams today.</p>
+            </div>
+        }
+    </div>
+</div>
+<hr />
+<div class="row" id="futureExams">
+    <div class="col">
+        <h2>Future Exams</h2>
+        @if (Model.FutureExams.Count > 0)
+        {
+            <div class="card">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th>
+                                Exam Title
+                            </th>
+                            <th>
+                                Classroom Title
+                            </th>
+                            <th>
+                                Date
+                            </th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.FutureExams)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Classroom.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartTime)
+                                </td>
+                                <td>
+                                    <a asp-action="EditExam" asp-route-id="@item.ExamID">
+                                        <input type="button" class="btn btn-primary" value="Edit" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <a asp-action="DeleteExam" asp-route-id="@item.ExamID">
+                                        <input type="button" class="btn btn-danger" value="Delete" />
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-dismissible alert-secondary">
+                <h4>No exams to show</h4>
+                <p>Looks like you don't have any exams coming up.</p>
+            </div>
+        }
+    </div>
+</div>
+<hr />
+<div class="row" id="pastExams">
+    <div class="col">
+        <h2>Past Exams</h2>
+        @if (Model.PastExams.Count > 0)
+        {
+            <div class="card">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th>
+                                Exam Title
+                            </th>
+                            <th>
+                                Classroom Title
+                            </th>
+                            <th>
+                                Date
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PastExams)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Classroom.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartTime)
+                                </td>
+                                <td>
+                                    <a asp-action="ExamStatistics" asp-route-id="@item.ExamID">
+                                        <input type="button" class="btn btn-info" value="Review Exam" />
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-dismissible alert-secondary">
+                <h4>No exams to show</h4>
+                <p>Looks like didn't have any tests yet</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        function directToExamStatistics(id) {
+            window.location.href = `/Teachers/ExamStatistics/${id}`;
+        }
+    </script>
+}

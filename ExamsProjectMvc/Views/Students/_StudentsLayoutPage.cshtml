@@ -1,0 +1,22 @@
+﻿@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@RenderBody()
+
+@section Style
+{
+    @RenderSection("Style", required: false)
+}
+
+@section Navbar
+{
+    <partial name="StudentsNavbar" />
+}
+
+@section Scripts
+{
+    @RenderSection("Scripts", required: false)
+}
+

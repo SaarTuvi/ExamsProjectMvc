@@ -1,0 +1,83 @@
+﻿@model ExamsProjectMvc.Models.TeachersModels.CreateExamViewModel
+@using System.Globalization;
+@{
+    string submitButtonValue = ViewData["SbumitText"].ToString();
+    string examDate;
+    examDate = Model.StartTime.ToString("s", CultureInfo.CreateSpecificCulture("fr-FR"));
+    examDate = examDate.Remove(examDate.Length - 3);
+}
+
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div id="hidden">
+    <input asp-for="TeacherID" type="hidden" />
+    <input asp-for="ClassroomID" type="hidden" />
+    <input asp-for="ExamID" type="hidden" />
+</div>
+<div class="row">
+    <div class="col">
+
+        <div class="card text-white bg-dark ">
+            <div class="card-header">
+                <div class="form-group">
+                    <input asp-for="Title" id="title" class="form-control form-control-lg" placeholder="Enter Exam Title" style="height:80px; font-size:60px" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <textarea asp-for="Description" id="description" class="form-control" placeholder="Enter Description" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+
+                        <div class="form-group">
+                            <label asp-for="StartTime" class="control-label"></label>
+                            <input asp-for="StartTime" id="startTime" class="form-control" max="@Model.MaxDate" min="@Model.MinDate" value="@examDate" />
+                            <span asp-validation-for="StartTime" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+
+                        <div class="form-group">
+                            <label asp-for="ExamDurationInMinutes" class="control-label"></label>
+                            <input asp-for="ExamDurationInMinutes" class="form-control" step="10" min="0" />
+                            <span asp-validation-for="ExamDurationInMinutes" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+
+                        <div class="form-group">
+                            <label for="classroomSelect">Assign to classroom</label>
+                            <select class="form-control" id="classroomSelect">
+                                @foreach (var item in Model.Classrooms)
+                                {
+                                    if (Model.ClassroomID == item.ClassroomID)
+                                    {
+                                        <option value="@item.ClassroomID" selected="selected">@item.Title</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.ClassroomID">@item.Title</option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="questionForm" />
+<hr />
+<div class="row">
+    <div class="col text-right">
+        <div class="form-group">
+            <input type="submit" value="@submitButtonValue" class="btn btn-success" />
+        </div>
+    </div>
+</div>

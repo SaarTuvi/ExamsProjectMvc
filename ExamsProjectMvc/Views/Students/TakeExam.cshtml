@@ -1,0 +1,197 @@
+﻿@using Newtonsoft.Json;
+@model ExamsProjectMvc.Models.StudentsModels.TakeExamViewModel;
+
+@section Style{
+    <link href="~/css/examBtnsStyle.css" rel="stylesheet" />
+}
+
+@{
+    Layout = "_StudentsLayoutPage.cshtml";
+    var jsonQuestions = JsonConvert.SerializeObject(Model.StudentQuestions);
+}
+<!--Counter-->
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <div class="progress" >
+                <div id="counterBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
+                     aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>
+            </div>
+        </div>
+<p></p>
+        <div class="col-2" id="counterText">
+        </div>
+    </div>
+</div>
+
+<!--Exam Form-->
+<form asp-action="TakeExam" onsubmit="return submitForm(event)" id="examForm">
+    <h1>@Model.Title</h1>
+    <div class="row">
+        <div class="col text-left">
+            <p>@Model.Description</p>
+            <button type="button" onclick="startExam(@jsonQuestions)" class="btn btn-success" id="startBtn">Start Exam</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col text-left">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="hidden">
+                <input asp-for="StudentId" type="hidden" />
+                <input asp-for="ExamID" type="hidden" />
+                <input asp-for="Student_ExamID" type="hidden" />
+            </div>
+            <div id="mainDiv">
+                <div class="card border-light mb-3" id="questionCard">
+                    <div class="card-header" id="progress">Question X out of Y</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="questionText"></h5>
+                        <div id="answersDiv" class="list-group"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <hr style="margin-top: 50px">
+    <footer id="footer">
+        <div class="row">
+            <div class="buttons">
+                <button type="button" id="prev" class="btn btn-primary"><span>Previous Question</span></button>
+                <button type="button" id="next" class="btn btn-primary"><span>Next Question</span></button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-right">
+                <div class="form-group">
+                    <input type="submit" value="Submit Test" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    </footer>
+</form>
+
+@section Scripts{
+    <script src="~/js/examClass.js"></script>
+    <script src="~/js/examHandler.js"></script>
+    <script>
+        let examObj = null;
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            let cardElement = document.querySelector("#questionCard");
+            let footerElement = document.querySelector("#footer");
+            footerElement.style.display = 'none';
+            cardElement.style.display = 'none';
+            setCounter();
+        });
+
+        function startExam(questions) {
+            examObj = new ExamJs(questions);
+            displayExam();
+            populateExam(examObj);
+        }
+
+        function submitForm(event) {
+            if (confirm("Submit Exam?")) {
+                for (var i = 0; i < examObj.questions.length; i++) {
+                    examObj.questions[i].UserAnswer = examObj.userAnswers[i];
+                }
+
+                let hiddenDiv = document.getElementById("hidden");
+                examObj.questions.forEach(function (question, index) {
+                    let questionText = document.createElement("input");
+                    questionText.type = "hidden";
+                    questionText.value = question.QuestionText
+                    questionText.name = `StudentQuestions[${index}].QuestionText`;
+                    hiddenDiv.appendChild(questionText);
+
+                    let questionUserAnsewr = document.createElement("input");
+                    questionUserAnsewr.type = "hidden";
+                    questionUserAnsewr.value = question.UserAnswer
+                    questionUserAnsewr.name = `StudentQuestions[${index}].UserAnswer`;
+                    hiddenDiv.appendChild(questionUserAnsewr);
+
+                    question.Answers.forEach(function (answer, i) {
+                        let questionAnswerChoiseText = document.createElement("input");
+                        questionAnswerChoiseText.type = "hidden";
+                        questionAnswerChoiseText.value = answer;
+                        questionAnswerChoiseText.name = `StudentQuestions[${index}].Answers[${i}]`;
+                        hiddenDiv.appendChild(questionAnswerChoiseText);
+                    })
+                })
+                let questionsInput = document.querySelector("#Questions");
+                questionsInput.value = examObj.questions;
+            } else {
+                event.preventDefault();
+            }
+        }
+
+
+        function saveProgress(event) {
+            let questionsData = [];
+            examObj.questions.forEach(function(element, index){
+                questionsData.push({
+                    "QuestionText": element.QuestionText,
+                    "UserAnswer": examObj.userAnswers[index]
+                });
+            });
+
+            let data = {
+                "ExamId": @Model.ExamID,
+                "StudentId": @Model.StudentId,
+                "Student_ExamId": @Model.Student_ExamID,
+                "StudentQuestions": questionsData
+            };
+
+
+            $.ajax({
+                "url": "@Url.Action("SaveProgress", "Students")",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Cookie": ".AspNetCore.Antiforgery.Sg_MxKhBdyQ=CfDJ8Dw0IZky7GlKsEq53HwR6QSFt2BeJK52GeP9Q-hsdaP4Az-4zH_dkSVvZsdVA4u9e-sEID6CYi7zDovuAcjvPoU_I0b5XI_WI3JJ-KuNHBoU-TptaEJQhaQSoKPTef0jJDg_F0FMfgTwubP1KyD9gCI"
+                },
+                "method": "PUT",
+                "data": JSON.stringify(data)
+            }).done(function (response) {
+                console.log(response);
+            });
+        }
+
+        function setCounter() {
+            // Set the date we're counting down to
+            let countDownDate = new Date("@Model.StartTime.AddMinutes(Model.ExamDurationInMinutes).ToString("yyyy-MM-ddTHH:mm:ss")");
+            let examTime = @Model.ExamDurationInMinutes * 60 * 1000;
+            // Update the count down every 1 second
+            let x = setInterval(function () {
+
+                // Get today's date and time
+                let now = new Date().getTime();
+
+                // Find the distance between now and the count down date
+                let distance = countDownDate - now;
+                let presentage = Math.floor(distance / examTime * 100);
+                // Time calculations for days, hours, minutes and seconds
+                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Output the result in an element with id="demo"
+                document.getElementById("counterText").innerHTML = hours + "h "
+                    + minutes + "m " + seconds + "s ";
+                let counterBar = document.getElementById("counterBar");
+                counterBar.style.width = `${presentage}%`;
+                if (minutes < 15 && hours == 0)
+                    counterBar.classList.add("bg-danger")
+                if (distance < 0) {
+                    clearInterval(x);
+                    saveProgress();
+                    alert("Exam Ended");
+                    window.location.href = "@Url.Action("Index","Students")";
+                }
+            }, 1000);
+        }
+
+    </script>
+} 

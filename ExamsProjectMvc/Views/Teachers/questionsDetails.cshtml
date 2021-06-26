@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ExamsProjectMvc.Models.TeachersModels.QuestionViewModel>
+
+<div class="row">
+    <div class="col">
+        <h3>Questions:</h3>
+        @foreach (var question in Model)
+        {
+            <div class="row">
+                <div class="col">
+                    <input type="button" class="btn btn-block btn-outline-dark" data-toggle="collapse" style="text-align:left"
+                           data-target="#answers-@question.QuestionID" value="@question.QuestionText" />
+                    <div id="answers-@question.QuestionID" class="collapse">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var answer in question.AnswerChoises)
+                            {
+                                if (answer.IsCorrectAnswer)
+                                {
+                                    <li class="list-group-item list-group-item-success text-left">@answer.AnswerChoiceText</li>
+                                }
+                                else
+                                {
+                                    <li class="list-group-item text-left">@answer.AnswerChoiceText</li>
+
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <br />
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    string studentName = ViewData["Student"].ToString();
+    string teacherName = ViewData["Teacher"].ToString();
+
+
+    string exam = ViewData["Exam"].ToString();
+    string question = ViewData["Question"].ToString();
+
+    string firstchoice =  ViewData["FirstChoice"].ToString();
+    string second = ViewData["SecondChoice"].ToString();
+    string classroom = ViewData["Class"].ToString();
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <h1>Student : @studentName</h1>
+    <h1>Teacher : @teacherName</h1>
+    <h1>Classroom : @classroom</h1>
+    <h1> Exam: @exam</h1>
+    <h1>question : @question</h1>
+ <h3>First : @firstchoice</h3>
+    <h3>Second : @second</h3>
+</div>

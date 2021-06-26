@@ -1,0 +1,233 @@
+﻿@using Newtonsoft.Json;
+@model ExamsProjectMvc.Models.TeachersModels.ExamStatsViewModel
+
+@{
+    ViewData["Title"] = "Exam Statistics";
+    Layout = "~/Views/Teachers/_TeachersLayoutPage.cshtml";
+    int[] gradesArr = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+    foreach (var se in Model.Student_Exam_Collection)
+    {
+        int i = 0; ;
+        if (0 <= se.Grade && se.Grade <= 54)
+        {
+            gradesArr[i]++;
+        }
+        i++;
+        if (55 <= se.Grade && se.Grade <= 69)
+        {
+            gradesArr[i]++;
+        }
+        i++;
+        if (70 <= se.Grade && se.Grade <= 79)
+        {
+            gradesArr[i]++;
+        }
+        i++;
+        if (80 <= se.Grade && se.Grade <= 89)
+        {
+            gradesArr[i]++;
+        }
+        i++;
+        if (90 <= se.Grade && se.Grade <= 94)
+        {
+            gradesArr[i]++;
+        }
+        i++;
+        if (95 <= se.Grade && se.Grade <= 99)
+        {
+            gradesArr[i]++;
+        }
+        i++;
+        if (100 == se.Grade)
+        {
+            gradesArr[i]++;
+        }
+    }
+    var jsonGrades = JsonConvert.SerializeObject(gradesArr);
+}
+
+<h1>Exam Statistics</h1>
+    <hr />
+
+<div class="container">
+    <h3>Exam Information</h3>
+    <h5>@Html.DisplayFor(model => model.Title)</h5>
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.ClassroomTitle)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.ClassroomTitle)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.ExamDurationInMinutes)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.ExamDurationInMinutes)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.NumberOfStudents)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.NumberOfStudents)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.StudentsAttended)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.StudentsAttended)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.AvarageGradeOfAllClass)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.AvarageGradeOfAllClass)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.AvarageGradeOfAttendeed)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.AvarageGradeOfAttendeed)
+        </dd>
+
+    </dl>
+</div>
+            <hr />
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Charts</h3>
+        </div>
+        <div class="row">
+            <div class="col-12 py-1">
+                <div class="card border-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Grades</h5>
+                        <canvas id="gradesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 py-1">
+                <div class="card border-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Grades</h5>
+
+                        <canvas id="gradesPie"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 py-1">
+                <div class="card border-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Passed / Failed</h5>
+
+                        <canvas id="passFailPie"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 py-1">
+                <div class="card border-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Attendance</h5>
+
+                        <canvas id="attendantPie"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <hr />
+<div class="container">
+    <div class="row">
+        <div class="col-12 ">
+            <h3>Detailed Grades</h3>
+            <table class="table table-hover text-center">
+                <thead>
+                    <tr class="table-dark">
+                        <th>
+                            Student Name
+                        </th>
+                        <th>
+                            Did Attend
+                        </th>
+                        <th>
+                            Grade
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var se in Model.Student_Exam_Collection)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => se.User.Name)
+                            </td>
+                            <td class="text-center">
+                                @if (se.IsAttended)
+                                {
+                                    <span class="badge badge-success">&#10003;</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">X</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => se.Grade)
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-info" onclick='directToReviewExam(@se.UserID)'>Review Exam</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to Index</a>
+</div>
+
+
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.js"></script>
+    <script src="~/js/charts.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            let gradesData = @jsonGrades;
+            let avarageGradeOfAll = @Model.AvarageGradeOfAllClass;
+            let attendantAvarage = @Model.AvarageGradeOfAttendeed;
+            let numberOfStudents = @Model.NumberOfStudents;
+            let studentsPassed = numberOfStudents - gradesData[0];
+            let studentsAttended = @Model.StudentsAttended;
+
+            createBarChart(gradesData, avarageGradeOfAll, attendantAvarage, numberOfStudents)
+
+            createGradesPie(gradesData, 'gradesPie')
+            createPassFailPie(numberOfStudents, studentsPassed, 'passFailPie')
+            createAttendencePie(numberOfStudents, studentsAttended, 'attendantPie')
+        });
+
+
+        function directToReviewExam(studentId) {
+            window.location.href = `/Teachers/ReviewExam?id=${@Model.ExamID}&studentId=${studentId}`;
+        }
+    </script>
+}

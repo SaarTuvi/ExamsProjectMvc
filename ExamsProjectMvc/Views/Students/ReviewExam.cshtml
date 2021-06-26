@@ -1,0 +1,67 @@
+﻿@model Common.IStudent_Exam
+
+@{
+    ViewData["Title"] = $"{Model.Exam.Title} - Exam Details";
+    Layout = "_StudentsLayoutPage.cshtml";
+
+    var examDetails = Model.Exam;
+}
+
+<h1>Exam Details</h1>
+
+<div>
+    <hr />
+
+    <h3>Final Grade: @Model.Grade</h3>
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            Title
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => examDetails.Title)
+        </dd>
+        <dt class="col-sm-2">
+            Description
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => examDetails.Description)
+        </dd>
+        <dt class="col-sm-2">
+            Classroom
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => examDetails.Classroom.Title)
+        </dd>
+        <dt class="col-sm-2">
+            Teacher
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => examDetails.Teacher.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Attended
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.IsAttended)
+            {
+                <span class="badge badge-success">&#10003;</span>
+            }
+            else
+            {
+                <span class="badge badge-danger">X</span>
+            }
+
+        </dd>
+    </dl>
+    <div class="row text-left">
+        <div class="col">
+            <h4>Your Answers:</h4>
+        </div>
+    </div>
+   
+</div>
+<partial name="_AnswerCards" model="@Model" />
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

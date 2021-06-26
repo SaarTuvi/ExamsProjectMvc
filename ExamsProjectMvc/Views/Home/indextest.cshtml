@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Common.IExam>
+
+@{
+    ViewData["Title"] = "indextest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>indextest</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExamDurationInMinutes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Teacher)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Classroom)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExamDurationInMinutes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Classroom.ClassroomID)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ExamID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ExamID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ExamID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,40 @@
+﻿
+@model ExamsProjectMvc.Models.LoginViewModel;
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_StudentsLayoutPage.cshtml";
+
+    ViewData["User"] = "Student";
+
+}
+
+<div class="row text-center">
+    <div class="col">
+        <h1>Exams Application</h1>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col">
+
+
+
+        <partial name="_LoginForm" for=@Model view-data="ViewData" />
+
+
+    </div>
+</div>
+@section Scripts
+{
+    @if (Model.IsAttempFailed)
+    {
+        <script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        alert('@(ViewData["errorMessage"] as string)');
+    });
+        </script>
+    }
+}
+
+
+

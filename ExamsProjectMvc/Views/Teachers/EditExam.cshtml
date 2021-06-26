@@ -1,0 +1,77 @@
+﻿@model ExamsProjectMvc.Models.TeachersModels.CreateExamViewModel
+@using ExamsProjectMvc.Models.TeachersModels
+@using Newtonsoft.Json;
+@{
+
+    ViewData["Title"] = "EditExam";
+    Layout = "~/Views/Teachers/_TeachersLayoutPage.cshtml";
+    ViewData["SbumitText"] = "Edit Exam";
+    string questionsJson = ViewData["ExamQuestions"].ToString();
+}
+
+
+<hr />
+<div class="row">
+    <div class="col">
+        <form asp-action="EditExam" onsubmit="return checkForm(event)">
+            
+            <partial name="CreateExamForm" />
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to homepage</a>
+</div>
+
+@section Scripts{
+
+    <script src="~/js/createexam.js"></script>
+    <script src="~/js/checkexamform.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let questionsData = @Html.Raw(questionsJson);
+            console.log(questionsData);
+           // let questionsData = JSON.parse(jsonData);
+            if (questionsData !== null) {
+                if (questionsData.constructor === Array) {
+                    let firstQuestion = true;
+                    questionsData.forEach((question, index) => {
+                        if (firstQuestion) {
+                            createNewQuestionCard(true);
+                            firstQuestion = false;
+                        }
+                        else {
+                            addQuestion();
+                        }
+                        fillQuestionCard(question, index+1);
+                    });
+                }
+            }
+        });
+
+        function fillQuestionCard(question, index) {
+            let cardDiv = document.getElementById(`questionCard${index}`);
+            let cardBody = cardDiv.querySelector(".card-body");
+            let questionTextInput = cardDiv.querySelector("#questionInputText");
+            questionTextInput.value = question.QuestionText;
+
+            question.AnswerChoises.forEach((answer, answerIndex) => {
+                    let textInput = cardDiv.querySelector(`#optionText${answerIndex + 1}`);
+                    textInput.value = answer.AnswerChoiceText;
+                if (answerIndex >= 1) {
+                    textInput.focus();
+                    textInput.blur();
+                }
+                if (answer.IsCorrectAnswer) {
+                    //Set the radio
+                    let radioElement = cardDiv.querySelector(`#option${answerIndex + 1}`);
+                    radioElement.checked = true;
+                }
+            })
+
+        }
+
+    </script>
+}
+

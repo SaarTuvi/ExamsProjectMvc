@@ -1,0 +1,79 @@
+﻿@model Common.IStudent_Exam
+
+@{
+    int numberOfQuestionRows = Model.Questions.Count() / 3;
+    if (Model.Questions.Count() % 3 > 0)
+    {
+        numberOfQuestionRows++;
+    }
+}
+
+@for (int i = 0; i < numberOfQuestionRows; i++)
+{
+    <div class="row">
+
+        @for (int y = 0; y < 3; y++)
+        {
+            int index = y + (3 * i);
+            if (index < Model.Questions.Count())
+            {
+                string cardClass = "card border-danger mb-4";
+                var question = Model.Questions.ToList()[y + 3 * i];
+                @if (question.IsCorrect)
+                {
+                    cardClass = "card border-success mb-4";
+                }
+                <div class="col-4">
+                    <div class="@cardClass" style="max-width: 20rem;">
+                        @if (!question.IsCorrect || !question.IsQuestionAnswered)
+                        {
+                            <div class="card-header bg-danger"> @question.Question.QuestionText</div>
+                        }
+                        else if (question.IsCorrect)
+                        {
+                            <div class="card-header bg-success"> @question.Question.QuestionText</div>
+                        }
+                        <div class="card-body">
+                            <ul class="list-group">
+                                @foreach (var option in question.Question.AnswerChoises)
+                                {
+                                    <li class="list-group-item">
+                                        @if (question.StudentAnswer == option.AnswerChoiceText && !question.IsCorrect)
+                                        {
+                                            <div class="text-danger border-danger">
+                                                <strong>@option.AnswerChoiceText</strong> <span class="badge badge-danger">X</span>
+                                            </div>
+                                        }
+                                        else if (option.IsCorrectAnswer && question.IsCorrect)
+                                        {
+                                            <div class="text-success">
+                                                <strong>@option.AnswerChoiceText</strong> <span class="badge badge-success">&#10003;</span>
+                                            </div>
+                                        }
+                                        else if (option.IsCorrectAnswer)
+                                        {
+                                            <div class="text-success">
+                                                <strong>@option.AnswerChoiceText</strong>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="text-muted">
+                                                @option.AnswerChoiceText
+                                            </div>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        @if (!question.IsQuestionAnswered)
+                        {
+                            <div class="card-footer bg-danger">Question Not Answered</div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+}
